@@ -1,5 +1,4 @@
 const LinkedList = require('../src/linked_lists');
-const linkedlist = require('../src/linked_lists');
 
 describe('linkedList', ()=> {
     let list;
@@ -63,7 +62,7 @@ describe('linkedList', ()=> {
         });
 
         test('toString() formats list correctly', () => {
-            expect(list.toString()).toBe('( A ) > ( B ) > ( C ) > null'); //[cite: 9]
+            expect(list.toString()).toBe('( A ) > ( B ) > ( C ) > null');
         });
     });
 
