@@ -2,13 +2,27 @@ class Hashmap {
 
     loadfactor = 0.75;
 
-    buckets = new Array(this.capacity).fill(null);
-    currentsize = 0;
-    capacity = 16;
+    constructor(){
+        this.currentsize = 0;
+        this.capacity = 16;
+        this.buckets = new Array(this.capacity).fill(null);
+    }
 
-    loadcheck(){
-        while (this.currentsize/this.capacity >= this.loadfactor){
-            this.capacity++;
+    loadcheck() {
+        if (this.currentsize / this.capacity >= this.loadfactor) {
+            let oldBuckets = this.buckets; 
+
+            this.capacity = this.capacity * 2;
+            this.buckets = new Array(this.capacity).fill(null);
+            this.currentsize = 0;
+
+            oldBuckets.forEach(bucket => {
+                let temp = bucket;
+                while (temp !== null) {
+                    this.set(temp.key, temp.value);
+                    temp = temp.nextNode;
+                }
+            });
         }
     }
 
@@ -26,6 +40,7 @@ class Hashmap {
     set(key, value){
 
         this.loadcheck();
+
         let bucketindex = this.hash(key) % this.capacity;
         let newHash = new Hash(key,value);
 
@@ -164,7 +179,7 @@ class Hashmap {
         return allKeys;
     }
 
-    value(){
+    values(){
         let allValues = [];
 
         this.buckets.forEach(bucket => {
