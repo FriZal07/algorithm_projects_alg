@@ -7,7 +7,7 @@ class Node{
 class Tree{
 
     constructor(array){
-        this.root = this.buildTree(array);
+        this.mainroot = this.buildTree(array);
     }
 
     buildTree(array){
@@ -23,7 +23,11 @@ class Tree{
         }
         if (arraylength_c == 2){
             newNode.root = array[1];
-            newNode.left = array[0];
+
+            let leftchild = new Node();
+            leftchild.root = array[0];
+
+            newNode.left = leftchild;
             return newNode;
         }
 
@@ -38,16 +42,104 @@ class Tree{
         return newNode;
     }
 
-    includes(value){
+    includes(value, pointer = this.mainroot){
 
+        if (pointer == null) {
+            return false;
+        }
+
+        if (pointer.root == value){
+            return true;
+        } else if(value > pointer.root){
+            pointer = pointer.right;
+            return this.includes(value, pointer);
+        } else if(value < pointer.root){
+            pointer = pointer.left;
+            return this.includes(value,pointer);
+        } 
     }
 
-    insert(value){
+    insert(value, pointer = this.mainroot){
+        if (pointer == null){
+            let newNode = new Node;
+            newNode.root = value;
+            this.mainroot = newNode;
+            return;
+        }
 
+        if (pointer.root == value) {
+            return;
+        } else if (value > pointer.root) {
+            if (pointer.right == null){
+                let newNode = new Node;
+                newNode.root = value;
+                pointer.right = newNode;
+                return;
+            }
+            return this.insert(value, pointer.right);
+        } else if (value < pointer.root) {
+            if (pointer.left == null) {
+                let newNode = new Node;
+                newNode.root = value;
+                pointer.left = newNode;
+                return;
+            }
+            return this.insert(value, pointer.left);
+        } 
     }
 
-    deleteItem(value){
+    deleteItem(value, pointer = this.mainroot) {
+        let parent = null;
+        let current = pointer;
 
+        while (current != null && current.root != value) {
+            parent = current;
+            if (value < current.root) {
+                current = current.left;
+            } else {
+                current = current.right;
+            }
+        }
+
+        if (current == null) {
+            return;
+        }
+
+        if (current.left != null && current.right != null) {
+            let successorparent = current;
+            let successor = current.right;
+
+            while (successor.left != null) {
+                successorparent = successor;
+                successor = successor.left;
+            }
+
+            current.root = successor.root;
+
+            if (successorparent === current) {
+                successorparent.right = successor.right;
+            } else {
+                successorparent.left = successor.right;
+            }
+
+            return;
+        }
+
+        let child;
+
+        if (current.left != null) {
+            child = current.left;
+        } else {
+            child = current.right;
+        }
+
+        if (parent == null) {
+            this.mainroot = child;
+        } else if (parent.left === current) {
+            parent.left = child;
+        } else {
+            parent.right = child;
+        }
     }
 
     levelOrderForEach(callback){
